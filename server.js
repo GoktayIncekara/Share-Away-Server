@@ -17,8 +17,8 @@ connection.once("open", () => {
     console.log("MongoDB database connection established succesfully");
 })
 
-let Category = require("./models/category.model");
-
+/* let Category = require("./models/category.model");
+ */
 //const name = "Technology";
 //const photo = " ";
 //const items = [];
@@ -26,13 +26,17 @@ let Category = require("./models/category.model");
 
 //newCategory.save();
 
-const categoriesRouter = require("./routes/categories");
+/* const categoriesRouter = require("./routes/categories"); */
 
-app.get("/",function(req, res) {
+/* app.get("/",function(req, res) {
     //Render HOME page
-});
+}); */
 
-app.use("/categories", categoriesRouter);
+
+/* app.use("/categories", categoriesRouter); */
+
+const userRouter = require('./routes/users');
+app.use('/users', userRouter);
 
 app.listen(port, function(){
     console.log("Server started on port "+ port);
