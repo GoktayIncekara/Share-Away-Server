@@ -1,13 +1,13 @@
-const router = require("express").Router();
+/* const router = require("express").Router();
 const res = require("express/lib/response");
 let Item = require("../models/item.model");
-let Category = require("../models/category.model");
+let Category = require("../models/category.model"); */
 
 /* router.route("/:category").get((req,res) => {
     
 }) */
 
- router.route("/").get((req,res) => {
+ /* router.route("/").get((req,res) => {
     Item.find()
     .then(items => res.json(items))
     .catch(err => res.status(400).json("Error: "+ err));
@@ -34,5 +34,5 @@ let Category = require("../models/category.model");
      .then(() => res.json("Item added!"))
      .catch(err => res.status(400).json("Error: "+err));
  });
-
- module.exports = router;
+ */
+ 

@@ -1,28 +1,33 @@
-const router = require('express').Router();
-let User = require('../models/user.model');
+/* 
+import '../server.js'
+const express = require('express')
+// const router = require('express').Router();
+const app = express()
+const cors = require("cors");
+const mongoose = require("mongoose");
+const User = require('../models/user.model');
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
-// initial comment edit
+app.post('/user/register', async (req, res) => {
+    console.log(req.body)
+    try {
+        const newPassword = await bcrypt.hash(req.body.password, 10)
+        await User.create({
+            username: req.body.username,
+            name: req.body.name,
+            surname: req.body.surname,
+            email: req.body.email,
+            password: newPassword,
+            address: req.body.address,
+        })
+        res.json({ status: 'ok' })
+    } catch (err) {
+        res.json({ status: 'error', error: 'Duplicate email or username' })
+    }
+}) */
 
-router.route('/').get((req, res) => {
-    User.find()
-      .then(users => res.json(users))
-      .catch(err => res.status(400).json('Error: ' + err));
-});
-
-router.route('/add').post((req, res) => {
-    const username = req.body.username;
-    const name = req.body.name;
-    const surname = req.body.surname;
-    const email = req.body.email;
-    const password = req.body.password;
-    const address = req.body.address;
-
-    const newUser = new User({username, name, surname, email, password, address});
-  
-    newUser.save()
-      .then(() => res.json('User added!'))
-      .catch(err => res.status(400).json('Error: ' + err));
-});  
+/*
 
 router.route('/:id').get((req, res) => {
     User.findById(req.params.id)
@@ -51,6 +56,8 @@ router.route('/update/:id').post((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
     })
     .catch(err => res.status(400).json('Error: ' + err));
-});
+}); 
 
-module.exports = router;
+*/
+
+//module.exports = router;
