@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/Share-Away-Server.js/server.js",
+    "build": "cd React/Share-Away && npm install && npm run build"
+  },
+  "engines": {
+    "node": "v16.14.0"
   },
   "keywords": [],
   "author": "",
