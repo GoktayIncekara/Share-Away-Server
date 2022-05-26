@@ -1,15 +1,9 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/Share-Away-Server.js/server.js",
-    "build": "cd React/Share-Away && npm install && npm run build"
-  },
-  "engines": {
-    "node": "v16.14.0"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -22,5 +16,15 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.3",
     "nodemon": "^2.0.16"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GoktayIncekara/Share-Away-Server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GoktayIncekara/Share-Away-Server/issues"
+  },
+  "homepage": "https://github.com/GoktayIncekara/Share-Away-Server#readme",
+  "description": ""
 }
