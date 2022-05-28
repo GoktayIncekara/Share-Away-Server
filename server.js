@@ -8,11 +8,6 @@ const User = require('./models/user.model');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
-<<<<<<< HEAD
-=======
-app.use(express.static(path.resolve(__dirname, '../React/Share-Away/build')));
-
->>>>>>> parent of cefb655... take back last commit
 require("dotenv").config();
 const port = process.env.PORT || 5000;
 
@@ -29,7 +24,7 @@ and should be written after express.json
 */
 
 // set the uri from the URL in .env file
-heroku_uri= process.env.DB_URI;
+//heroku_uri= process.env.DB_URI;
 const uri = process.env.ATLAS_URI || heroku_uri ;
 // connect to the mongodb with the uri
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -82,7 +77,7 @@ app.post('/user/login', async (req, res) => {
             {
                 name: user.name,
                 surname: user.surname,
-                usename: user.username,
+                username: user.username,
                 email: user.email,
                 address: user.address,
             },
