@@ -1,3 +1,5 @@
+
+
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
@@ -18,9 +20,10 @@ const userSchema = new Schema({
     password: {
         type: String, required: true, trim: true, minlength: 6,
     },
-    address: {
-        type: String,
-    }
+    profilePic: {
+        type: String, required: true, trim: true,
+    },
+
 }, {
     timestamps: true,
 });

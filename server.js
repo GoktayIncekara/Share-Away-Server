@@ -50,10 +50,11 @@ app.post('/user/register', async (req, res) => {
             surname: req.body.surname,
             email: req.body.email,
             password: newPassword,
-            address: req.body.address,
+            profilePic: req.body.profilePic,
         })
         res.json({ status: 'ok' })
     } catch (err) {
+        console.log(err)
         res.json({ status: 'error', error: 'Duplicate email or username' })
     }
 })
@@ -79,7 +80,7 @@ app.post('/user/login', async (req, res) => {
                 surname: user.surname,
                 username: user.username,
                 email: user.email,
-                address: user.address,
+                profilePic: user.profilePic,
             },
             'mostSecretKeyword123'
         )
