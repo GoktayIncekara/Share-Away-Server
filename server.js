@@ -1,12 +1,11 @@
-
 const express = require('express')
 // const router = require('express').Router();
 const app = express()
 const cors = require("cors");
 const mongoose = require("mongoose");
 const User = require('./models/user.model');
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 require("dotenv").config();
 const port = process.env.PORT || 5000;
@@ -35,10 +34,8 @@ connection.once("open", () => {
     console.log("MongoDB database connection established succesfully");
 })
 
-
 // const userRouter = require('./routes/users');
 // app.use('/users', userRouter);
-
 
 app.post('/user/register', async (req, res) => {
     console.log(req.body)
@@ -91,7 +88,43 @@ app.post('/user/login', async (req, res) => {
     }
 })
 
+//responde to call from user profile page to change password
+app.post('/user/changePassword', async (req, res) => {
+	const token = req.headers['x-access-token']
 
+	try {
+		const decoded = jwt.verify(token, 'mostSecretKeyword123')
+		const username = decoded.username
+        const user = await User.findOne({ username: username })
+
+        if (!user) {
+            return res.json({ status: 'errorUserNotFound', error: 'Invalid login' })
+        }
+
+        //compare password and entered password
+        const isPasswordValid = await bcrypt.compare(
+            req.body.oldPass,
+            user.password
+        )
+
+        //if password is entered correctly, encode the new password and save it
+        if(isPasswordValid){
+            const newPassword = await bcrypt.hash(req.body.newPass, 10)
+            await User.updateOne(
+                { username: username },
+                { $set: { password: newPassword } }
+            )
+            return res.json({ status: 'ok' })
+        }
+        else{
+            return res.json({ status: 'errorPassword', error: 'Old Password is wrong.' })
+        }
+        
+	} catch (error) {
+		console.log(error)
+		res.json({ status: 'error', error: 'invalid token' })
+	}
+})
 
 // to listen all the calls on the port
 app.listen(port, function () {
