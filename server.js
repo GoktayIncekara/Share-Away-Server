@@ -1,9 +1,9 @@
 const express = require('express')
-// const router = require('express').Router();
 const app = express()
 const cors = require("cors");
 const mongoose = require("mongoose");
 const User = require('./models/user.model');
+const Product = require('./models/product.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -34,8 +34,6 @@ connection.once("open", () => {
     console.log("MongoDB database connection established succesfully");
 })
 
-// const userRouter = require('./routes/users');
-// app.use('/users', userRouter);
 
 app.post('/user/register', async (req, res) => {
     console.log(req.body)
@@ -123,6 +121,32 @@ app.post('/user/changePassword', async (req, res) => {
 	} catch (error) {
 		console.log(error)
 		res.json({ status: 'error', error: 'invalid token' })
+	}
+})
+
+app.post('/user/addProduct', async (req, res) => {
+	const token = req.headers['x-access-token']
+
+	try {
+		const decoded = jwt.verify(token, 'mostSecretKeyword123')
+		console.log(decoded.username)
+
+        await Product.create({
+            username: decoded.username,
+            title: req.body.title,
+            description: req.body.description,
+            category: req.body.category,
+            shipping: req.body.shipping,
+            city: req.body.city,
+            district: req.body.district,
+            productPicture: ''
+        })
+    
+        res.json({ status: 'ok' })
+        
+	} catch (error) {
+		console.log(error)
+		res.json({ status: 'error', error: 'invalid value or token' })
 	}
 })
 
