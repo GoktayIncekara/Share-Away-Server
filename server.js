@@ -108,6 +108,15 @@ app.post('/user/login', async (req, res) => {
     }
 })
 
+app.get("/user/:username", async (req, res) => {
+    try {
+      const user = await User.findOne({username : req.params.username});
+      res.status(200).json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+}); 
+
 /* app.post('/user/updateProfilePicture', async (req, res) => {
 
     try {
@@ -205,6 +214,63 @@ app.post('/user/addProduct', async (req, res) => {
 		res.json({ status: 'error', error: 'invalid value or token' })
 	}
 })
+
+/* app.put('/user/products/:id', async (req, res) => {
+
+	try {
+		await Product.findByIdAndUpdate(
+            req.params.id,
+            {
+              $set: req.body,
+            },
+            { new: true })
+    
+        res.json({ status: 'ok' })
+        
+	} catch (error) {
+		console.log(error)
+		res.json({ status: 'error', error: 'invalid value or token' })
+	}
+}) */
+
+/* app.delete("/user/products/:id", async (req, res) => {
+    try {
+      await Product.findByIdAndDelete(req.params.id);
+      res.json({ status: 'ok' })
+    } catch (err) {
+        res.json({ status: 'error', error: 'invalid' })
+    }
+}); */
+
+app.get("/products/:id", async (req, res) => {
+    try {
+      const product = await Product.findById(req.params.id);
+      res.status(200).json(product);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+});
+
+//Get all products with selected filters
+app.get("/products", async (req, res) => {
+    const qUsername = req.query.username;
+    const qCategory = req.query.category;
+    try {
+      let products;
+  
+      if (qUsername) {
+        products = await Product.find({username: qUsername});
+      } else if (qCategory) {
+        products = await Product.find({category: qCategory});
+      } else {
+        products = await Product.find();
+      }
+  
+      res.status(200).json(products);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
 
 // to listen all the calls on the port
 app.listen(port, function () {
