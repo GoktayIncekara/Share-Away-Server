@@ -118,24 +118,20 @@ app.get("/user/:username", async (req, res) => {
     }
 }); 
 
-/* app.post('/user/updateProfilePicture', async (req, res) => {
+app.post('/user/updateProfilePicture', upload.single('profilePic'), async (req, res) => {
 
     try {
-         await User.updateOne(
-             { $set: { username: username + 'new'} }
-         ) 
-        const user = await User.findOne({
-            username: req.body.username,
-        })
-        console.log(user)
-
+        await User.updateOne(
+            { username: req.body.username },
+            { $set: { profilePic: req.file.filename } }
+        )
         res.json({ status: 'okupdatepicture' })
     } catch (err) {
         console.log(err)
         res.json({ status: 'error', error: 'Could not update profile picture!' })
     }
 
-}) */
+})
 
 /* app.get("/user/:username", async (req, res) => {
     try {
