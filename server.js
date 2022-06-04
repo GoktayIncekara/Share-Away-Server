@@ -111,12 +111,12 @@ app.post('/user/login', async (req, res) => {
 
 app.get("/user/:username", async (req, res) => {
     try {
-      const user = await User.findOne({username : req.params.username});
-      res.status(200).json(user);
+        const user = await User.findOne({ username: req.params.username });
+        res.status(200).json(user);
     } catch (err) {
-      res.status(500).json(err);
+        res.status(500).json(err);
     }
-}); 
+});
 
 app.post('/user/updateProfilePicture', upload.single('profilePic'), async (req, res) => {
 
@@ -125,7 +125,21 @@ app.post('/user/updateProfilePicture', upload.single('profilePic'), async (req, 
             { username: req.body.username },
             { $set: { profilePic: req.file.filename } }
         )
-        res.json({ status: 'okPPupdate' })
+        const user = await User.findOne({
+            username: req.body.username,
+        })
+        const token = jwt.sign(
+            {
+                name: user.name,
+                surname: user.surname,
+                username: user.username,
+                email: user.email,
+                profilePic: req.file.filename,
+            },
+            'mostSecretKeyword123'
+        )
+  
+        res.json({ status: 'ok', user: token })
     } catch (err) {
         console.log(err)
         res.json({ status: 'errorPPupdae', error: 'Could not update profile picture!' })
@@ -187,11 +201,11 @@ app.post('/user/changePassword', async (req, res) => {
 })
 
 app.post('/user/addProduct', async (req, res) => {
-	const token = req.headers['x-access-token']
+    const token = req.headers['x-access-token']
 
-	try {
-		const decoded = jwt.verify(token, 'mostSecretKeyword123')
-		//console.log(decoded.username)
+    try {
+        const decoded = jwt.verify(token, 'mostSecretKeyword123')
+        //console.log(decoded.username)
 
         await Product.create({
             username: decoded.username,
@@ -204,19 +218,19 @@ app.post('/user/addProduct', async (req, res) => {
             district: req.body.district,
             productPicture: ''
         })
-    
+
         res.json({ status: 'ok' })
-        
-	} catch (error) {
-		console.log(error)
-		res.json({ status: 'error', error: 'invalid value or token' })
-	}
+
+    } catch (error) {
+        console.log(error)
+        res.json({ status: 'error', error: 'invalid value or token' })
+    }
 })
 
 /* app.put('/user/products/:id', async (req, res) => {
 
-	try {
-		await Product.findByIdAndUpdate(
+    try {
+        await Product.findByIdAndUpdate(
             req.params.id,
             {
               $set: req.body,
@@ -225,10 +239,10 @@ app.post('/user/addProduct', async (req, res) => {
     
         res.json({ status: 'ok' })
         
-	} catch (error) {
-		console.log(error)
-		res.json({ status: 'error', error: 'invalid value or token' })
-	}
+    } catch (error) {
+        console.log(error)
+        res.json({ status: 'error', error: 'invalid value or token' })
+    }
 }) */
 
 /* app.delete("/user/products/:id", async (req, res) => {
@@ -242,10 +256,10 @@ app.post('/user/addProduct', async (req, res) => {
 
 app.get("/products/:id", async (req, res) => {
     try {
-      const product = await Product.findById(req.params.id);
-      res.status(200).json(product);
+        const product = await Product.findById(req.params.id);
+        res.status(200).json(product);
     } catch (err) {
-      res.status(500).json(err);
+        res.status(500).json(err);
     }
 });
 
@@ -254,21 +268,21 @@ app.get("/products", async (req, res) => {
     const qUsername = req.query.username;
     const qCategory = req.query.category;
     try {
-      let products;
-  
-      if (qUsername) {
-        products = await Product.find({username: qUsername});
-      } else if (qCategory) {
-        products = await Product.find({category: qCategory});
-      } else {
-        products = await Product.find();
-      }
-  
-      res.status(200).json(products);
+        let products;
+
+        if (qUsername) {
+            products = await Product.find({ username: qUsername });
+        } else if (qCategory) {
+            products = await Product.find({ category: qCategory });
+        } else {
+            products = await Product.find();
+        }
+
+        res.status(200).json(products);
     } catch (err) {
-      res.status(500).json(err);
+        res.status(500).json(err);
     }
-  });
+});
 
 // to listen all the calls on the port
 app.listen(port, function () {
