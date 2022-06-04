@@ -125,10 +125,10 @@ app.post('/user/updateProfilePicture', upload.single('profilePic'), async (req, 
             { username: req.body.username },
             { $set: { profilePic: req.file.filename } }
         )
-        res.json({ status: 'okupdatepicture' })
+        res.json({ status: 'okPPupdate' })
     } catch (err) {
         console.log(err)
-        res.json({ status: 'error', error: 'Could not update profile picture!' })
+        res.json({ status: 'errorPPupdae', error: 'Could not update profile picture!' })
     }
 
 })
