@@ -138,7 +138,7 @@ app.post('/user/updateProfilePicture', upload.single('profilePic'), async (req, 
             },
             'mostSecretKeyword123'
         )
-  
+
         res.json({ status: 'ok', user: token })
     } catch (err) {
         console.log(err)
@@ -200,27 +200,32 @@ app.post('/user/changePassword', async (req, res) => {
     }
 })
 
-app.post('/user/addProduct', async (req, res) => {
-    const token = req.headers['x-access-token']
+app.post('/user/addProduct', upload.single('productPicture'), async (req, res) => {
+    //const token = req.headers['x-access-token']
+    const token = req.body.token
+    console.log("backend token:" + token)
 
     try {
         const decoded = jwt.verify(token, 'mostSecretKeyword123')
-        //console.log(decoded.username)
+        console.log("backend decoded username:" + decoded.username)
 
         await Product.create({
             username: decoded.username,
             email: decoded.email,
+            //username: 'haydar',
+            //email: 'haydar@gmail.com',
             title: req.body.title,
             description: req.body.description,
             category: req.body.category,
             shipping: req.body.shipping,
             city: req.body.city,
             district: req.body.district,
-            productPicture: ''
+            productPicture: req.file.filename,
         })
 
         res.json({ status: 'ok' })
-
+        console.log("body:", req.body)
+        console.log("filename:", req.file.filename)
     } catch (error) {
         console.log(error)
         res.json({ status: 'error', error: 'invalid value or token' })
