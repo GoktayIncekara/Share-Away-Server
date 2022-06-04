@@ -43,7 +43,7 @@ connection.once("open", () => {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '../Share-Away/pictures');
+        cb(null, '../Share-Away/src/pictures');
     },
     filename: function (req, file, cb) {
         cb(null, uuidv4() + '-' + Date.now() + path.extname(file.originalname));
