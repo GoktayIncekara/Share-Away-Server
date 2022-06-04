@@ -19,7 +19,7 @@ const userSchema = new Schema({
         type: String, required: true, trim: true, minlength: 6,
     },
     profilePic: {
-        type: String,  trim: true,
+        type: String,
     },
 
 }, {

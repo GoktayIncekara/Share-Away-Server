@@ -6,6 +6,9 @@ const User = require('./models/user.model');
 const Product = require('./models/product.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
+let path = require('path');
 
 require("dotenv").config();
 const port = process.env.PORT || 5000;
@@ -24,7 +27,7 @@ and should be written after express.json
 
 // set the uri from the URL in .env file
 //heroku_uri= process.env.DB_URI;
-const uri = process.env.ATLAS_URI || heroku_uri ;
+const uri = process.env.ATLAS_URI || heroku_uri;
 // connect to the mongodb with the uri
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 // create a connection variable
@@ -35,8 +38,26 @@ connection.once("open", () => {
 })
 
 
-app.post('/user/register', async (req, res) => {
-    console.log(req.body)
+
+// ----------------------------------------------
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, '../Share-Away/pictures');
+    },
+    filename: function (req, file, cb) {
+        cb(null, uuidv4() + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+
+let upload = multer({ storage: storage });
+
+//----------------------------------
+
+app.post('/user/register', upload.single('profilePic'), async (req, res) => {
+    console.log("body:", req.body)
+    console.log("filename:", req.file.filename)
     try {
         const newPassword = await bcrypt.hash(req.body.password, 10)
         await User.create({
@@ -45,13 +66,14 @@ app.post('/user/register', async (req, res) => {
             surname: req.body.surname,
             email: req.body.email,
             password: newPassword,
-            profilePic: req.body.profilePic,
+            profilePic: req.file.filename,
         })
         res.json({ status: 'ok' })
     } catch (err) {
         console.log(err)
         res.json({ status: 'error', error: 'Duplicate email or username' })
     }
+
 })
 
 app.post('/user/login', async (req, res) => {
@@ -86,13 +108,47 @@ app.post('/user/login', async (req, res) => {
     }
 })
 
+/* app.post('/user/updateProfilePicture', async (req, res) => {
+
+    try {
+         await User.updateOne(
+             { $set: { username: username + 'new'} }
+         ) 
+        const user = await User.findOne({
+            username: req.body.username,
+        })
+        console.log(user)
+
+        res.json({ status: 'okupdatepicture' })
+    } catch (err) {
+        console.log(err)
+        res.json({ status: 'error', error: 'Could not update profile picture!' })
+    }
+
+}) */
+
+/* app.get("/user/:username", async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username });
+        const newName = user.name + 'new';
+        console.log(user)
+/*         await User.updateOne(
+            { $set: { name: newName } }
+        )    
+        res.status(200).json(user);
+        console.log(user)
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}); */
+
 //responde to call from user profile page to change password
 app.post('/user/changePassword', async (req, res) => {
-	const token = req.headers['x-access-token']
+    const token = req.headers['x-access-token']
 
-	try {
-		const decoded = jwt.verify(token, 'mostSecretKeyword123')
-		const username = decoded.username
+    try {
+        const decoded = jwt.verify(token, 'mostSecretKeyword123')
+        const username = decoded.username
         const user = await User.findOne({ username: username })
 
         if (!user) {
@@ -106,7 +162,7 @@ app.post('/user/changePassword', async (req, res) => {
         )
 
         //if password is entered correctly, encode the new password and save it
-        if(isPasswordValid){
+        if (isPasswordValid) {
             const newPassword = await bcrypt.hash(req.body.newPass, 10)
             await User.updateOne(
                 { username: username },
@@ -114,14 +170,14 @@ app.post('/user/changePassword', async (req, res) => {
             )
             return res.json({ status: 'ok' })
         }
-        else{
+        else {
             return res.json({ status: 'errorPassword', error: 'Old Password is wrong.' })
         }
-        
-	} catch (error) {
-		console.log(error)
-		res.json({ status: 'error', error: 'invalid token' })
-	}
+
+    } catch (error) {
+        console.log(error)
+        res.json({ status: 'error', error: 'invalid token' })
+    }
 })
 
 app.post('/user/addProduct', async (req, res) => {
