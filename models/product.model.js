@@ -6,6 +6,9 @@ const productSchema = new Schema({
     username: {
         type: String, ref:'User', required: true, 
     },
+    email: {
+        type: String
+    },
     title: {
         type: String, required: true, minlength: 3
     },

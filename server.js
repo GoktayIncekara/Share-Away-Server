@@ -9,6 +9,7 @@ const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 let path = require('path');
+const { decode } = require('punycode');
 
 require("dotenv").config();
 const port = process.env.PORT || 5000;
@@ -194,10 +195,11 @@ app.post('/user/addProduct', async (req, res) => {
 
 	try {
 		const decoded = jwt.verify(token, 'mostSecretKeyword123')
-		console.log(decoded.username)
+		//console.log(decoded.username)
 
         await Product.create({
             username: decoded.username,
+            email: decoded.email,
             title: req.body.title,
             description: req.body.description,
             category: req.body.category,
