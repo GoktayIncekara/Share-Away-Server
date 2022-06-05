@@ -257,9 +257,19 @@ app.delete("/user/products/:id", async (req, res) => {
 app.get("/products/:id", async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
-        res.status(200).json(product);
+        /* const user = await User.findOne({
+            username: req.body.username,
+        }) */
+        const relatedUser = product.username
+        const user = await User.findOne({
+            username: relatedUser,
+        })
+        //console.log("from products id: " + user.profilePic)
+        //res.status(200).json(product);
+        res.json({ status: 'ok', product: product, user: user })
     } catch (err) {
-        res.status(500).json(err);
+        //res.status(500).json(err);
+        res.json({ status: 'errorProdut', error: 'Could not get Product!' })
     }
 });
 
