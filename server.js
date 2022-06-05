@@ -9,7 +9,6 @@ const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 let path = require('path');
-const { decode } = require('punycode');
 
 require("dotenv").config();
 const port = process.env.PORT || 5000;
@@ -20,28 +19,27 @@ app.use(cors({
 }));
 
 /*
-app user cors wil allow http request from another source we make calls from 3000 to 5000 and if you do not specify the origin: -->  allow all the calls from all the outer sources
-
+app user cors wil allow http request from another source we make calls from 3000 to 5000
+and if you do not specify the origin: -->  allow all the calls from all the outer sources
 if you try to make calls from :3001 --> will deny it
 and should be written after express.json
 */
 
 // set the uri from the URL in .env file
-//heroku_uri= process.env.DB_URI;
 const uri = process.env.ATLAS_URI || heroku_uri;
+
 // connect to the mongodb with the uri
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
 // create a connection variable
 const connection = mongoose.connection;
+
 // establish the connection
 connection.once("open", () => {
     console.log("MongoDB database connection established succesfully");
 })
 
-
-
 // ----------------------------------------------
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, '../Share-Away/src/pictures');
@@ -51,9 +49,7 @@ const storage = multer.diskStorage({
     }
 });
 
-
 let upload = multer({ storage: storage });
-
 //----------------------------------
 
 app.post('/user/register', upload.single('profilePic'), async (req, res) => {
@@ -147,7 +143,8 @@ app.post('/user/updateProfilePicture', upload.single('profilePic'), async (req, 
 
 })
 
-/* app.get("/user/:username", async (req, res) => {
+/* 
+app.get("/user/:username", async (req, res) => {
     try {
         const user = await User.findOne({ username: req.params.username });
         const newName = user.name + 'new';
@@ -160,7 +157,9 @@ app.post('/user/updateProfilePicture', upload.single('profilePic'), async (req, 
     } catch (err) {
         res.status(500).json(err);
     }
-}); */
+}); 
+
+*/
 
 //responde to call from user profile page to change password
 app.post('/user/changePassword', async (req, res) => {
@@ -203,17 +202,11 @@ app.post('/user/changePassword', async (req, res) => {
 app.post('/user/addProduct', upload.single('productPicture'), async (req, res) => {
     //const token = req.headers['x-access-token']
     const token = req.body.token
-    console.log("backend token:" + token)
-
     try {
         const decoded = jwt.verify(token, 'mostSecretKeyword123')
-        console.log("backend decoded username:" + decoded.username)
-
         await Product.create({
             username: decoded.username,
             email: decoded.email,
-            //username: 'haydar',
-            //email: 'haydar@gmail.com',
             title: req.body.title,
             description: req.body.description,
             category: req.body.category,
@@ -224,15 +217,14 @@ app.post('/user/addProduct', upload.single('productPicture'), async (req, res) =
         })
 
         res.json({ status: 'ok' })
-        console.log("body:", req.body)
-        console.log("filename:", req.file.filename)
     } catch (error) {
         console.log(error)
         res.json({ status: 'error', error: 'invalid value or token' })
     }
 })
 
-/* app.put('/user/products/:id', async (req, res) => {
+/* 
+app.put('/user/products/:id', async (req, res) => {
 
     try {
         await Product.findByIdAndUpdate(
@@ -248,16 +240,19 @@ app.post('/user/addProduct', upload.single('productPicture'), async (req, res) =
         console.log(error)
         res.json({ status: 'error', error: 'invalid value or token' })
     }
-}) */
+}) 
+*/
 
-/* app.delete("/user/products/:id", async (req, res) => {
+/* 
+app.delete("/user/products/:id", async (req, res) => {
     try {
       await Product.findByIdAndDelete(req.params.id);
       res.json({ status: 'ok' })
     } catch (err) {
         res.json({ status: 'error', error: 'invalid' })
     }
-}); */
+}); 
+*/
 
 app.get("/products/:id", async (req, res) => {
     try {
